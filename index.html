@@ -1,7 +1,482 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content="width=device-width,height=device-height, initial-scale=1, shrink-to-fit=yes">
+
+    <!--Basic meta info -->
+    <meta name="keywords"
+        content="Google Sheets, Google Apps Script, Google Data Studio, GOOGLEFINANCE, SPARKLINE, dividend, stock investment, stock portfolio tracker, dividend yield">
+    <meta name="author" content="All Stacks Developer" />
+    <meta name="description"
+        content="I write All Stacks Developer blog to share best practices about using Google Sheets, Google Apps Script, Google Data Studio, and software development.">
+
+    <!--OpenGraph meta -->
+    <meta property="og:description"
+        content="I write All Stacks Developer blog to share best practices about using Google Sheets, Google Apps Script, Google Data Studio, and software development." />
+    <meta property="og:title"
+        content="Best practices about using Google Sheets, Google Apps Script, Google Data Studio, and software development. " />
+    <meta property="og:image"
+        content="https://1.bp.blogspot.com/-fJaQmukBW40/YHdGI2pc67I/AAAAAAAAALI/x27ehQa3IDo7xHlCF6xlo2EPOSu8RfcPwCPcBGAsYHg/s800/Screenshot%2B2021-04-14%2Bat%2B21.42.39.png" />
+    <meta property="og:url" content="https://www.allstacksdeveloper.com/" />
+
+    <!--meta for twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:creator" content="@all_stacks">
+    <meta name="twitter:site" content="@all_stacks">
+
+    <link href='https://www.allstacksdeveloper.com/favicon.ico' rel='icon' type='image/x-icon' />
+
+    <title></title>
+</head>
+
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+
+    <ul>
+        <li><a href="#create-personal-stock-portfolio-tracker-with-google-sheets-and-google-data-studio">Create personal
+                stock portfolio tracker with Google Sheets and Google Data Studio</a></li>
+        <li><a href="#how-to-copy-data-in-google-sheets-as-html-table">How to copy data in Google Sheets as HTML
+                table</a></li>
+        <li><a href="#how-to-convert-column-index-into-letters-with-google-apps-script">How to convert column index into
+                letters with Google Apps Script</a></li>
+        <li><a href="#stock-correlation-analysis-with-google-sheets">Stock Correlation Analysis With Google Sheets</a>
+        </li>
+        <li><a href="#create-a-dividend-income-tracker-with-google-sheets-by-simply-using-pivot-tables">Create a
+                dividend income tracker with Google Sheets by simply using pivot tables</a></li>
+        <li><a href="#create-dividend-income-tracker-with-google-data-studio">Create dividend income tracker with Google
+                Data Studio</a></li>
+        <li><a
+                href="#time-value-of-money-present-value-pv-future-value-fv-net-present-value-npv-internal-rate-of-return-irr">Time
+                value of money, Present Value (PV), Future Value (FV), Net Present Value (NPV), Internal Rate of Return
+                (IRR)</a></li>
+        <li><a
+                href="#how-to-calculate-the-internal-rate-of-return-irr-and-the-net-present-value-npv-of-a-stock-portfolio-with-google-sheets">How
+                to calculate the internal rate of return (IRR) and the net present value (NPV) of a stock portfolio with
+                Google Sheets</a></li>
+        <li><a
+                href="#demo-how-to-use-xirr-and-xnpv-functions-of-google-sheets-to-calculate-internal-rate-of-return-irr-and-net-present-value-npv-for-a-stock-portfolio">Demo
+                how to use XIRR and XNPV functions of Google Sheets to calculate internal rate of return (IRR) and net
+                present value (NPV) for a stock portfolio</a></li>
+        <li><a href="#compute-cost-basis-of-stocks-with-fifo-method-in-google-sheets">Compute cost basis of stocks with
+                FIFO method in Google Sheets</a></li>
+        <li><a href="#slice-array-in-google-sheets">Slice array in Google Sheets</a></li>
+        <li><a href="#use-sparkline-to-create-52-week-range-price-indicator-chart-for-stocks-in-google-sheets">Use
+                SPARKLINE to create 52-week range price indicator chart for stocks in Google Sheets</a></li>
+        <li><a href="#googlefinance-best-practices">GOOGLEFINANCE Best Practices</a></li>
+        <li><a href="#use-sparkline-column-chart-to-create-price-chart-with-reference-price">Use SPARKLINE column chart
+                to create price chart with reference price</a></li>
+    </ul>
+    <h3 id="create-personal-stock-portfolio-tracker-with-google-sheets-and-google-data-studio">Create personal stock
+        portfolio tracker with Google Sheets and Google Data Studio</h3>
+    <p>The LION stock portfolio tracker is a personal stock portfolio tracker built with Google Sheets and Google Data
+        Studio. The transactions of a stock portfolio are registered in Google Sheets. The tracker uses the
+        GOOGLEFINANCE built-in function in Google Sheets to have the historical and current prices of stocks. The
+        tracker has a small Google Apps Script program to do some complex computation, such as generating automatically
+        the stock portfolio's daily change and comparing it with alternative investments. The stock portfolio is then
+        visualized on a beautiful and interactive dashboard with Google Data Studio. This guide shows how to create a
+        personal stock portfolio tracker with Google Sheets and Google Data Studio.</p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <!-- Choose image of 800px width -->
+            <source
+                srcset="https://1.bp.blogspot.com/-fJaQmukBW40/YHdGI2pc67I/AAAAAAAAALI/x27ehQa3IDo7xHlCF6xlo2EPOSu8RfcPwCPcBGAsYHg/s800/Screenshot%2B2021-04-14%2Bat%2B21.42.39.png"
+                media="(min-width: 1168px)" />
+            <!-- Choose image of 600px width -->
+            <source
+                srcset="https://1.bp.blogspot.com/-fJaQmukBW40/YHdGI2pc67I/AAAAAAAAALI/x27ehQa3IDo7xHlCF6xlo2EPOSu8RfcPwCPcBGAsYHg/s600/Screenshot%2B2021-04-14%2Bat%2B21.42.39.png"
+                media="(min-width: 481) and (max-width: 1167px)" />
+            <!-- Choose image of 480px width -->
+            <source
+                srcset="https://1.bp.blogspot.com/-fJaQmukBW40/YHdGI2pc67I/AAAAAAAAALI/x27ehQa3IDo7xHlCF6xlo2EPOSu8RfcPwCPcBGAsYHg/s480/Screenshot%2B2021-04-14%2Bat%2B21.42.39.png"
+                media="(max-width: 480px)" />
+            <img alt="Create stock portfolio tracker dashboard with Google Sheets and Google Data Studio"
+                title="Create stock portfolio tracker dashboard with Google Sheets and Google Data Studio"
+                src="https://1.bp.blogspot.com/-fJaQmukBW40/YHdGI2pc67I/AAAAAAAAALI/x27ehQa3IDo7xHlCF6xlo2EPOSu8RfcPwCPcBGAsYHg/s800/Screenshot%2B2021-04-14%2Bat%2B21.42.39.png"
+                loading="lazy" />
+        </picture>
+    </div>
+    <h3 id="how-to-copy-data-in-google-sheets-as-html-table">How to copy data in Google Sheets as HTML table</h3>
+    <p>I often need to extract some sample data in Google Sheets and present it in my blog as an HTML table. However,
+        when copying a selected range in Google Sheets and paste it outside the Google Sheets, I only get plain text. In
+        this post, I explain how to copy data in Google Sheets as an HTML table by writing a small Apps Script program.
+    </p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <!-- Choose image of 800px width -->
+            <source
+                srcset="https://1.bp.blogspot.com/-H4_aIGJEO34/YK6k6YX103I/AAAAAAAAAPA/52vt1x8LtdU_i5u-IhIUcVjpNAWJv3MawCPcBGAsYHg/s800/Screenshot%2B2021-05-26%2Bat%2B21.39.54.png"
+                media="(min-width: 1168px)" />
+            <!-- Choose image of 600px width -->
+            <source
+                srcset="https://1.bp.blogspot.com/-H4_aIGJEO34/YK6k6YX103I/AAAAAAAAAPA/52vt1x8LtdU_i5u-IhIUcVjpNAWJv3MawCPcBGAsYHg/s600/Screenshot%2B2021-05-26%2Bat%2B21.39.54.png"
+                media="(min-width: 481) and (max-width: 1167px)" />
+            <!-- Choose image of 480px width -->
+            <source
+                srcset="https://1.bp.blogspot.com/-H4_aIGJEO34/YK6k6YX103I/AAAAAAAAAPA/52vt1x8LtdU_i5u-IhIUcVjpNAWJv3MawCPcBGAsYHg/s480/Screenshot%2B2021-05-26%2Bat%2B21.39.54.png"
+                media="(max-width: 480px)" />
+            <img alt="Copy sheets as HTML table" title="Copy sheets as HTML table"
+                src="https://1.bp.blogspot.com/-H4_aIGJEO34/YK6k6YX103I/AAAAAAAAAPA/52vt1x8LtdU_i5u-IhIUcVjpNAWJv3MawCPcBGAsYHg/s800/Screenshot%2B2021-05-26%2Bat%2B21.39.54.png"
+                loading="lazy" />
+        </picture>
+    </div>
+    <h3 id="how-to-convert-column-index-into-letters-with-google-apps-script">How to convert column index into letters
+        with Google Apps Script</h3>
+    <p>Although Google Sheets does not provide a ready-to-use function that takes a column index as an input and returns
+        corresponding letters as output, we can still do the task by leveraging other built-in functions
+        <strong>ADDRESS</strong>, <strong>REGEXEXTRACT</strong>, <strong>INDEX</strong>, <strong>SPLIT</strong> as shown
+        in <a
+            href="https://www.allstacksdeveloper.com/2021/08/how-to-convert-column-index-into-letters-with-google-sheets.html">the
+            post</a>. However, in form of a formula, that solution is not applicable for scripting with Google Apps
+        Script. In this post, we look at how to write a utility function with Google Apps Script that converts column
+        index into corresponding letters.</p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <!-- Choose image of 800px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgQ8sIScurWT7YXSyBMTlcuiV-YaEbI78i1LczmY80gY_POxeCGxPGg1Xu0kCDI2HIIq8vWnZ6mkCFlOP4rDump0M8fbNuBsvwShjlUZqZ5HIgR7yRolXjRPKLFqmco6TajBcYFxotOlL_V0hP0h3YnhHPvcATjAi3vK59p6yXNMNj-3f6MVsey_aBO/s800/5F0D6E65-8915-444A-8B3F-ABC7FC901E3C.jpeg"
+                media="(min-width: 1168px)" />
+            <!-- Choose image of 600px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgQ8sIScurWT7YXSyBMTlcuiV-YaEbI78i1LczmY80gY_POxeCGxPGg1Xu0kCDI2HIIq8vWnZ6mkCFlOP4rDump0M8fbNuBsvwShjlUZqZ5HIgR7yRolXjRPKLFqmco6TajBcYFxotOlL_V0hP0h3YnhHPvcATjAi3vK59p6yXNMNj-3f6MVsey_aBO/s600/5F0D6E65-8915-444A-8B3F-ABC7FC901E3C.jpeg"
+                media="(min-width: 481) and (max-width: 1167px)" />
+            <!-- Choose image of 480px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgQ8sIScurWT7YXSyBMTlcuiV-YaEbI78i1LczmY80gY_POxeCGxPGg1Xu0kCDI2HIIq8vWnZ6mkCFlOP4rDump0M8fbNuBsvwShjlUZqZ5HIgR7yRolXjRPKLFqmco6TajBcYFxotOlL_V0hP0h3YnhHPvcATjAi3vK59p6yXNMNj-3f6MVsey_aBO/s480/5F0D6E65-8915-444A-8B3F-ABC7FC901E3C.jpeg"
+                media="(max-width: 480px)" />
+            <img alt="Use SPARKLINE column chart to show stock price trend in Google Sheets"
+                title="Use SPARKLINE column chart to show stock price trend in Google Sheets"
+                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgQ8sIScurWT7YXSyBMTlcuiV-YaEbI78i1LczmY80gY_POxeCGxPGg1Xu0kCDI2HIIq8vWnZ6mkCFlOP4rDump0M8fbNuBsvwShjlUZqZ5HIgR7yRolXjRPKLFqmco6TajBcYFxotOlL_V0hP0h3YnhHPvcATjAi3vK59p6yXNMNj-3f6MVsey_aBO/s800/5F0D6E65-8915-444A-8B3F-ABC7FC901E3C.jpeg"
+                loading="lazy" />
+        </picture>
+    </div>
+    <!-- Jumpbreak is before table of content -->
+    <p><span>
+            <!--more-->
+        </span></p>
+    <h3 id="stock-correlation-analysis-with-google-sheets">Stock Correlation Analysis With Google Sheets</h3>
+    <p>Correlation is a statistical relationship that measures how related the movement of one variable is compared to
+        another variable. For example, stock prices fluctuate over time and are correlated accordingly or inversely to
+        one another. Understanding stock correlation and being able to perform analysis are very helpful in managing a
+        stock portfolio investment. In this post, I explain in details how to perform correlation analysis among stocks
+        in Google Sheets.</p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <!-- Choose image of 800px width -->
+            <source
+                srcset="https://1.bp.blogspot.com/-49mKOOqyNQc/YRv-gF7WENI/AAAAAAAAARo/fgP2osgQHGYdp5udK18hrK-mjqF250TQQCPcBGAYYCw/s1000/8D8F21F2-19CE-4718-82BB-35D9035ECE48.jpeg"
+                media="(min-width: 1168px)" />
+            <!-- Choose image of 600px width -->
+            <source
+                srcset="https://1.bp.blogspot.com/-49mKOOqyNQc/YRv-gF7WENI/AAAAAAAAARo/fgP2osgQHGYdp5udK18hrK-mjqF250TQQCPcBGAYYCw/s800/8D8F21F2-19CE-4718-82BB-35D9035ECE48.jpeg"
+                media="(min-width: 481) and (max-width: 1167px)" />
+            <!-- Choose image of 480px width -->
+            <source
+                srcset="https://1.bp.blogspot.com/-49mKOOqyNQc/YRv-gF7WENI/AAAAAAAAARo/fgP2osgQHGYdp5udK18hrK-mjqF250TQQCPcBGAYYCw/s480/8D8F21F2-19CE-4718-82BB-35D9035ECE48.jpeg"
+                media="(max-width: 480px)" />
+            <img alt="How to use CORREL function and GOOGLEFINANCE function in Google Sheets"
+                title="How to use CORREL function and GOOGLEFINANCE function in Google Sheets"
+                src="https://1.bp.blogspot.com/-49mKOOqyNQc/YRv-gF7WENI/AAAAAAAAARo/fgP2osgQHGYdp5udK18hrK-mjqF250TQQCPcBGAYYCw/s1000/8D8F21F2-19CE-4718-82BB-35D9035ECE48.jpeg"
+                loading="lazy" />
+        </picture>
+    </div>
+    <h3 id="create-a-dividend-income-tracker-with-google-sheets-by-simply-using-pivot-tables">Create a dividend income
+        tracker with Google Sheets by simply using pivot tables</h3>
+    <p>As my investment strategy is to buy stocks that pay regular and stable dividends during a long-term period, I
+        need to monitor my dividends income by stocks, by months, and by years, so that I can answer quickly and exactly
+        the following questions:</p>
+    <ul>
+        <li>How much dividend did I receive on a given month and a given year?</li>
+        <li>How much dividend did I receive for a given stock in a given year?</li>
+        <li>Have a given stock's annual dividend per share kept increasing gradually over years?</li>
+        <li>Have a given stock's annual dividend yield been stable over years?</li>
+    </ul>
+    <p>In this post, I explain how to create a dividend tracker for a stock investment portfolio with Google Sheets by
+        simply using pivot tables.</p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <!-- Choose image of 800px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/a/AVvXsEijbviI6qmfMX3CJm_lCzaq5UvWE6oS3NPwnc9eotkcQo_LVBufIyr952TKVWLpJy_ldn6ifGSdJY1BtOcEV5-Az808DT6EmAMENMXI7QaCDcAZkIAvU0vYUqLXlXDqZo0x3Ac1ena9bozCDz3aGiX5Kh9NuXq1DG9EBXk1eL5Q5l20MrBFZDNJDH6a=s800"
+                media="(min-width: 1168px)" />
+            <!-- Choose image of 600px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/a/AVvXsEijbviI6qmfMX3CJm_lCzaq5UvWE6oS3NPwnc9eotkcQo_LVBufIyr952TKVWLpJy_ldn6ifGSdJY1BtOcEV5-Az808DT6EmAMENMXI7QaCDcAZkIAvU0vYUqLXlXDqZo0x3Ac1ena9bozCDz3aGiX5Kh9NuXq1DG9EBXk1eL5Q5l20MrBFZDNJDH6a=s600"
+                media="(min-width: 481) and (max-width: 1167px)" />
+            <!-- Choose image of 480px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/a/AVvXsEijbviI6qmfMX3CJm_lCzaq5UvWE6oS3NPwnc9eotkcQo_LVBufIyr952TKVWLpJy_ldn6ifGSdJY1BtOcEV5-Az808DT6EmAMENMXI7QaCDcAZkIAvU0vYUqLXlXDqZo0x3Ac1ena9bozCDz3aGiX5Kh9NuXq1DG9EBXk1eL5Q5l20MrBFZDNJDH6a=s480"
+                media="(max-width: 480px)" />
+            <img alt="How to create dividend tracker with Google Sheets"
+                title="How to create dividend tracker with Google Sheets"
+                src="https://blogger.googleusercontent.com/img/a/AVvXsEijbviI6qmfMX3CJm_lCzaq5UvWE6oS3NPwnc9eotkcQo_LVBufIyr952TKVWLpJy_ldn6ifGSdJY1BtOcEV5-Az808DT6EmAMENMXI7QaCDcAZkIAvU0vYUqLXlXDqZo0x3Ac1ena9bozCDz3aGiX5Kh9NuXq1DG9EBXk1eL5Q5l20MrBFZDNJDH6a=s800"
+                loading="lazy" />
+        </picture>
+    </div>
+    <h3 id="create-dividend-income-tracker-with-google-data-studio">Create dividend income tracker with Google Data
+        Studio</h3>
+    <p>With transactions registered, it is easy to create a dividend income tracker with Google Sheets. However, a
+        dividend income tracker in Google Sheets is not interactive. Instead of having different pivot tables and
+        switching forth and back among them, I can create an interactive dividend income tracker with a single-page
+        report on Google Data Studio.</p>
+    <p>In this post, I explain how to create a dividend income tracker with Google Data Studio.</p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <!-- Choose image of 800px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/a/AVvXsEhEIMaMlnw2yC-TCbwVDOFC8fVyXLGj0XGHLlZ2VE8LeQBFHLV9IJpf24z9cWJxTqboLCOowR2Ik2-V22jWkQPWno4NH9VLg-YS8c0WYvbrpeo4h1AYk8ew06-Ze0G06xDjXzCw0L23KFyNvioqVofqCc5n898EhdKKCcXoRKcPssMwX_HNK8Bw7psy=s800"
+                media="(min-width: 1168px)" />
+            <!-- Choose image of 600px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/a/AVvXsEhEIMaMlnw2yC-TCbwVDOFC8fVyXLGj0XGHLlZ2VE8LeQBFHLV9IJpf24z9cWJxTqboLCOowR2Ik2-V22jWkQPWno4NH9VLg-YS8c0WYvbrpeo4h1AYk8ew06-Ze0G06xDjXzCw0L23KFyNvioqVofqCc5n898EhdKKCcXoRKcPssMwX_HNK8Bw7psy=s600"
+                media="(min-width: 481) and (max-width: 1167px)" />
+            <!-- Choose image of 480px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/a/AVvXsEhEIMaMlnw2yC-TCbwVDOFC8fVyXLGj0XGHLlZ2VE8LeQBFHLV9IJpf24z9cWJxTqboLCOowR2Ik2-V22jWkQPWno4NH9VLg-YS8c0WYvbrpeo4h1AYk8ew06-Ze0G06xDjXzCw0L23KFyNvioqVofqCc5n898EhdKKCcXoRKcPssMwX_HNK8Bw7psy=s480"
+                media="(max-width: 480px)" />
+            <img alt="How to create dividend income tracker with Google Data Studio"
+                title="How to create dividend income tracker with Google Data Studio"
+                src="https://blogger.googleusercontent.com/img/a/AVvXsEhEIMaMlnw2yC-TCbwVDOFC8fVyXLGj0XGHLlZ2VE8LeQBFHLV9IJpf24z9cWJxTqboLCOowR2Ik2-V22jWkQPWno4NH9VLg-YS8c0WYvbrpeo4h1AYk8ew06-Ze0G06xDjXzCw0L23KFyNvioqVofqCc5n898EhdKKCcXoRKcPssMwX_HNK8Bw7psy=s800"
+                loading="lazy" />
+        </picture>
+    </div>
+    <h3 id="time-value-of-money-present-value-pv-future-value-fv-net-present-value-npv-internal-rate-of-return-irr">Time
+        value of money, Present Value (PV), Future Value (FV), Net Present Value (NPV), Internal Rate of Return (IRR)
+    </h3>
+    <p>Why do I use my current money to invest in the stock market? Because I expect to have more money in the future.
+        Why do I need more money in the future than now? Because of many reasons, the same amount of money will have
+        less purchasing power than today. Therefore my investment needs to generate more money than today to protect my
+        purchasing power in the future. That is the main concept of the time value of money where one dollar today is
+        worth more than one dollar in the future.</p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <!-- Choose image of 800px width -->
+            <source
+                srcset="https://1.bp.blogspot.com/-YilCcf6mDMs/YH3pK1AZSFI/AAAAAAAAANA/qv4w_F7FIV0KKQOxmqI47ILCQg5dNIvfACPcBGAsYHg/s800/Screenshot%2B2021-04-19%2Bat%2B22.22.57.png"
+                media="(min-width: 1168px)" />
+            <!-- Choose image of 600px width -->
+            <source
+                srcset="https://1.bp.blogspot.com/-YilCcf6mDMs/YH3pK1AZSFI/AAAAAAAAANA/qv4w_F7FIV0KKQOxmqI47ILCQg5dNIvfACPcBGAsYHg/s600/Screenshot%2B2021-04-19%2Bat%2B22.22.57.png"
+                media="(min-width: 481) and (max-width: 1167px)" />
+            <!-- Choose image of 480px width -->
+            <source
+                srcset="https://1.bp.blogspot.com/-YilCcf6mDMs/YH3pK1AZSFI/AAAAAAAAANA/qv4w_F7FIV0KKQOxmqI47ILCQg5dNIvfACPcBGAsYHg/s480/Screenshot%2B2021-04-19%2Bat%2B22.22.57.png"
+                media="(max-width: 480px)" />
+            <img alt="Time value of money, Present Value (PV), Future Value (FV), Net Present Value (NPV), Internal Rate of Return (IRR)"
+                title="Time value of money, Present Value (PV), Future Value (FV), Net Present Value (NPV), Internal Rate of Return (IRR)"
+                src="https://1.bp.blogspot.com/-YilCcf6mDMs/YH3pK1AZSFI/AAAAAAAAANA/qv4w_F7FIV0KKQOxmqI47ILCQg5dNIvfACPcBGAsYHg/s800/Screenshot%2B2021-04-19%2Bat%2B22.22.57.png"
+                loading="lazy" />
+        </picture>
+    </div>
+    <h3
+        id="how-to-calculate-the-internal-rate-of-return-irr-and-the-net-present-value-npv-of-a-stock-portfolio-with-google-sheets">
+        How to calculate the internal rate of return (IRR) and the net present value (NPV) of a stock portfolio with
+        Google Sheets</h3>
+    <p>As a long-term investor, I need to know how to evaluate the performance of my stock portfolio. A simple return on
+        investment calculation is not a good indicator for long-term investment because it does not take into account
+        the holding duration, and cash flows involved during that period. A return on investment of 80% after 20 years
+        is not as impressive as it sounds after 1 year. In this post, I explain the idea of using Google Sheets to
+        calculate the internal rate of return (IRR) and the net present value (NPV) of a stock portfolio.</p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <!-- Choose image of 800px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/a/AVvXsEjQJErmSQDDS0cnGX77l321rFGpEbkm5qgSvOGXmViIaeFm-NJWvstAFZ0XrgGrP76n8rJF-T30QjlUm0elJxpEMfC4dOX-rxEKlBsJJU05ewcVn9r8b34ii0Ku5XODTNBa36UFy4BSkiI6eTSt9P7c1-PugsjTEtFVpfyO6WSkuvHmlK7QRE97STHQ=s800"
+                media="(min-width: 1168px)" />
+            <!-- Choose image of 600px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/a/AVvXsEjQJErmSQDDS0cnGX77l321rFGpEbkm5qgSvOGXmViIaeFm-NJWvstAFZ0XrgGrP76n8rJF-T30QjlUm0elJxpEMfC4dOX-rxEKlBsJJU05ewcVn9r8b34ii0Ku5XODTNBa36UFy4BSkiI6eTSt9P7c1-PugsjTEtFVpfyO6WSkuvHmlK7QRE97STHQ=s600"
+                media="(min-width: 481) and (max-width: 1167px)" />
+            <!-- Choose image of 480px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/a/AVvXsEjQJErmSQDDS0cnGX77l321rFGpEbkm5qgSvOGXmViIaeFm-NJWvstAFZ0XrgGrP76n8rJF-T30QjlUm0elJxpEMfC4dOX-rxEKlBsJJU05ewcVn9r8b34ii0Ku5XODTNBa36UFy4BSkiI6eTSt9P7c1-PugsjTEtFVpfyO6WSkuvHmlK7QRE97STHQ=s480"
+                media="(max-width: 480px)" />
+            <img alt="Diagram of cash flows for managing a stock investment portfolio in Google Sheets"
+                title="Diagram of cash flows for managing a stock investment portfolio in Google Sheets"
+                src="https://blogger.googleusercontent.com/img/a/AVvXsEjQJErmSQDDS0cnGX77l321rFGpEbkm5qgSvOGXmViIaeFm-NJWvstAFZ0XrgGrP76n8rJF-T30QjlUm0elJxpEMfC4dOX-rxEKlBsJJU05ewcVn9r8b34ii0Ku5XODTNBa36UFy4BSkiI6eTSt9P7c1-PugsjTEtFVpfyO6WSkuvHmlK7QRE97STHQ=s800"
+                loading="lazy" />
+        </picture>
+    </div>
+    <h3
+        id="demo-how-to-use-xirr-and-xnpv-functions-of-google-sheets-to-calculate-internal-rate-of-return-irr-and-net-present-value-npv-for-a-stock-portfolio">
+        Demo how to use XIRR and XNPV functions of Google Sheets to calculate internal rate of return (IRR) and net
+        present value (NPV) for a stock portfolio</h3>
+    <p>I have explained <a
+            href="https://www.allstacksdeveloper.com/2022/01/how-to-calculate-the-internal-rate-of-return-IRR-and-the-net-present-value-NPV-of-a-stock-portfolio-with-google-sheets.html">the
+            idea of using Google Sheets functions to calculate internal rate of return (IRR) and net present value (NPV)
+            for a stock portfolio</a>. The process consists mainly of three steps:</p>
+    <ul>
+        <li>Identify cash flows from transactions managed in a Google Sheets spreadsheet</li>
+        <li>Choose a discount rate based on personal preferences</li>
+        <li>Apply XIRR and XNPV functions of Google Sheets</li>
+    </ul>
+    <p>In this post, I demonstrate step-by-step how to apply this process to calculate internal rate of return (IRR) and
+        net present value (NPV) for a stock portfolio at 3 levels.</p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <!-- Choose image of 800px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/a/AVvXsEjIlzXb13dt4Xbw-FpqMGeOwQJrOM10Dt3T9nNGlCLbS8TLmr1s4gY6x_zLeprKgXDCHfYS05OqunBKDBXPXMhFCO019Feq7lpD78wDFH1cL8H8DwoDdHgiNS_3n13UCWy1L5ynxCYiteXKicd8oy5q75vfmbod0FTx5sXmWq9etaish3kV59c1wic8=s800"
+                media="(min-width: 1168px)" />
+            <!-- Choose image of 600px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/a/AVvXsEjIlzXb13dt4Xbw-FpqMGeOwQJrOM10Dt3T9nNGlCLbS8TLmr1s4gY6x_zLeprKgXDCHfYS05OqunBKDBXPXMhFCO019Feq7lpD78wDFH1cL8H8DwoDdHgiNS_3n13UCWy1L5ynxCYiteXKicd8oy5q75vfmbod0FTx5sXmWq9etaish3kV59c1wic8=s600"
+                media="(min-width: 481) and (max-width: 1167px)" />
+            <!-- Choose image of 480px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/a/AVvXsEjIlzXb13dt4Xbw-FpqMGeOwQJrOM10Dt3T9nNGlCLbS8TLmr1s4gY6x_zLeprKgXDCHfYS05OqunBKDBXPXMhFCO019Feq7lpD78wDFH1cL8H8DwoDdHgiNS_3n13UCWy1L5ynxCYiteXKicd8oy5q75vfmbod0FTx5sXmWq9etaish3kV59c1wic8=s480"
+                media="(max-width: 480px)" />
+            <img alt="How to use XIRR and XNPV functions of Google Sheets to calculate internal rate of return (IRR) and net present value (NPV) for a stock investment portfolio"
+                title="How to use XIRR and XNPV functions of Google Sheets to calculate internal rate of return (IRR) and net present value (NPV) for a stock investment portfolio"
+                src="https://blogger.googleusercontent.com/img/a/AVvXsEjIlzXb13dt4Xbw-FpqMGeOwQJrOM10Dt3T9nNGlCLbS8TLmr1s4gY6x_zLeprKgXDCHfYS05OqunBKDBXPXMhFCO019Feq7lpD78wDFH1cL8H8DwoDdHgiNS_3n13UCWy1L5ynxCYiteXKicd8oy5q75vfmbod0FTx5sXmWq9etaish3kV59c1wic8=s800"
+                loading="lazy" />
+        </picture>
+    </div>
+    <h3 id="compute-cost-basis-of-stocks-with-fifo-method-in-google-sheets">Compute cost basis of stocks with FIFO
+        method in Google Sheets</h3>
+    <p>After selling a portion of my holdings in a stock, the cost basis for the remain shares of that stock in my
+        portfolio is not simply the sum of all transactions. When selling, I need to decide which shares I want to sell.
+        One of the most common accounting methods is FIFO (first in, first out), meaning that the shares I bought
+        earliest will be the shares I sell first.</p>
+    <p>As you might already know, I use Google Sheets extensively to manage my stock portfolio investment, but, at the
+        moment of writing this post, I find that Google Sheets does not provide a built-in formula for FIFO. Luckily,
+        with lots of effort, I succeeded in building my own FIFO solution in Google Sheets, and I want to share it on
+        this blog.</p>
+    <p>In this post, I explain how to implement FIFO method in Google Sheets to compute cost basis in stocks investing.
+    </p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <!-- Choose image of 800px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiX9sX6ITWL_nwqFj-SsaPJfb7fF5_SOl6-qR75HQL9edJTjalbSVzVC8LzEww2LsnhNF92Vk0JUTxdhoBVeJlnGrZau333H1NssVp68kchCwsEcxsUNMdoEzG2WGqb1uFiYpoCuu9nL1HcUg0P8LpCGcCJLt_YOcM3Rl152mmxTYK1DFpbAfYiwf-l/s800/17327FBF-3FF8-45EC-AB5A-B250A699E914.jpeg"
+                media="(min-width: 1168px)" />
+            <!-- Choose image of 600px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiX9sX6ITWL_nwqFj-SsaPJfb7fF5_SOl6-qR75HQL9edJTjalbSVzVC8LzEww2LsnhNF92Vk0JUTxdhoBVeJlnGrZau333H1NssVp68kchCwsEcxsUNMdoEzG2WGqb1uFiYpoCuu9nL1HcUg0P8LpCGcCJLt_YOcM3Rl152mmxTYK1DFpbAfYiwf-l/s600/17327FBF-3FF8-45EC-AB5A-B250A699E914.jpeg"
+                media="(min-width: 481) and (max-width: 1167px)" />
+            <!-- Choose image of 480px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiX9sX6ITWL_nwqFj-SsaPJfb7fF5_SOl6-qR75HQL9edJTjalbSVzVC8LzEww2LsnhNF92Vk0JUTxdhoBVeJlnGrZau333H1NssVp68kchCwsEcxsUNMdoEzG2WGqb1uFiYpoCuu9nL1HcUg0P8LpCGcCJLt_YOcM3Rl152mmxTYK1DFpbAfYiwf-l/s480/17327FBF-3FF8-45EC-AB5A-B250A699E914.jpeg"
+                media="(max-width: 480px)" />
+            <img alt="FIFO function in Google Sheets" title="FIFO function in Google Sheets"
+                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiX9sX6ITWL_nwqFj-SsaPJfb7fF5_SOl6-qR75HQL9edJTjalbSVzVC8LzEww2LsnhNF92Vk0JUTxdhoBVeJlnGrZau333H1NssVp68kchCwsEcxsUNMdoEzG2WGqb1uFiYpoCuu9nL1HcUg0P8LpCGcCJLt_YOcM3Rl152mmxTYK1DFpbAfYiwf-l/s800/17327FBF-3FF8-45EC-AB5A-B250A699E914.jpeg"
+                loading="lazy" />
+        </picture>
+    </div>
+    <h3 id="slice-array-in-google-sheets">Slice array in Google Sheets</h3>
+    <p>Many functions in Google Sheets return an array as the result. However, I find that there is a lack of built-in
+        support functions in Google Sheets when working with an array. For example, the GOOGLEFINANCE function can
+        return the historical prices of a stock as a table of two columns and the first-row being headers Date and
+        Close. How can I ignore the headers or remove the headers from the results?</p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <!-- Choose image of 800px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiYTXpH5q1_-Ao3fk1PKWPu4GCxvo15vkepn_DsI-mhiCooqwamv4fs-_R8EdWA4v-LWg_HJjOJP2686BkOJn2RmhgDkagOflp0F5gSBEg5wHgC7vk8toeTV5Cp0axLwE13e21lKuciNJhdqFilfu7JDfsc3VHoHXHWKJM6FtQHyWYgqPY9i0wsA6f_/s800/Slice%20an%20array%20in%20Google%20Sheets.png"
+                media="(min-width: 1168px)" />
+            <!-- Choose image of 600px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiYTXpH5q1_-Ao3fk1PKWPu4GCxvo15vkepn_DsI-mhiCooqwamv4fs-_R8EdWA4v-LWg_HJjOJP2686BkOJn2RmhgDkagOflp0F5gSBEg5wHgC7vk8toeTV5Cp0axLwE13e21lKuciNJhdqFilfu7JDfsc3VHoHXHWKJM6FtQHyWYgqPY9i0wsA6f_/s600/Slice%20an%20array%20in%20Google%20Sheets.png"
+                media="(min-width: 481) and (max-width: 1167px)" />
+            <!-- Choose image of 480px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiYTXpH5q1_-Ao3fk1PKWPu4GCxvo15vkepn_DsI-mhiCooqwamv4fs-_R8EdWA4v-LWg_HJjOJP2686BkOJn2RmhgDkagOflp0F5gSBEg5wHgC7vk8toeTV5Cp0axLwE13e21lKuciNJhdqFilfu7JDfsc3VHoHXHWKJM6FtQHyWYgqPY9i0wsA6f_/s480/Slice%20an%20array%20in%20Google%20Sheets.png"
+                media="(max-width: 480px)" />
+            <img alt="Slice array in Google Sheets" title="Slice array in Google Sheets"
+                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiYTXpH5q1_-Ao3fk1PKWPu4GCxvo15vkepn_DsI-mhiCooqwamv4fs-_R8EdWA4v-LWg_HJjOJP2686BkOJn2RmhgDkagOflp0F5gSBEg5wHgC7vk8toeTV5Cp0axLwE13e21lKuciNJhdqFilfu7JDfsc3VHoHXHWKJM6FtQHyWYgqPY9i0wsA6f_/s800/Slice%20an%20array%20in%20Google%20Sheets.png"
+                loading="lazy" />
+        </picture>
+    </div>
+    <h3 id="use-sparkline-to-create-52-week-range-price-indicator-chart-for-stocks-in-google-sheets">Use SPARKLINE to
+        create 52-week range price indicator chart for stocks in Google Sheets</h3>
+    <p>The 52-week range price indicator chart shows the relative position of the current price compared to the 52-week
+        low and the 52-week high price. It visualizes whether the current price is closer to the 52-week low or the
+        52-week high price. In this post, I explain how to create a 52-week range price indicator chart for stocks by
+        using the SPARKLINE function and the GOOGLEFINANCE function in Google Sheets.</p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <!-- Choose image of 800px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjSUj3oenESPSMIqc-VFEL9ED2n9o0zGN6Q8IdK639lS0zA18hgxfmqdT9U9T6q2UsFRCv87qsPHlTXqvlzodTH3G95dlvFd2DcL4fCHQhwq7IBvyMd-irBlpQP9VZOwI817jge5tQsVMejALI_qJjYMOPh31DORDuC-ODZ-AMksaO1p98ZisqBpxKY/s800/C42A8361-3972-4C22-AB34-AD05C059A125.jpeg"
+                media="(min-width: 1168px)" />
+            <!-- Choose image of 600px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjSUj3oenESPSMIqc-VFEL9ED2n9o0zGN6Q8IdK639lS0zA18hgxfmqdT9U9T6q2UsFRCv87qsPHlTXqvlzodTH3G95dlvFd2DcL4fCHQhwq7IBvyMd-irBlpQP9VZOwI817jge5tQsVMejALI_qJjYMOPh31DORDuC-ODZ-AMksaO1p98ZisqBpxKY/s600/C42A8361-3972-4C22-AB34-AD05C059A125.jpeg"
+                media="(min-width: 481) and (max-width: 1167px)" />
+            <!-- Choose image of 480px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjSUj3oenESPSMIqc-VFEL9ED2n9o0zGN6Q8IdK639lS0zA18hgxfmqdT9U9T6q2UsFRCv87qsPHlTXqvlzodTH3G95dlvFd2DcL4fCHQhwq7IBvyMd-irBlpQP9VZOwI817jge5tQsVMejALI_qJjYMOPh31DORDuC-ODZ-AMksaO1p98ZisqBpxKY/s480/C42A8361-3972-4C22-AB34-AD05C059A125.jpeg"
+                media="(max-width: 480px)" />
+            <img alt="52-week range price indicator chart for stocks with SPARKLINE function in Google Sheets"
+                title="52-week range price indicator chart for stocks with SPARKLINE function in Google Sheets"
+                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjSUj3oenESPSMIqc-VFEL9ED2n9o0zGN6Q8IdK639lS0zA18hgxfmqdT9U9T6q2UsFRCv87qsPHlTXqvlzodTH3G95dlvFd2DcL4fCHQhwq7IBvyMd-irBlpQP9VZOwI817jge5tQsVMejALI_qJjYMOPh31DORDuC-ODZ-AMksaO1p98ZisqBpxKY/s800/C42A8361-3972-4C22-AB34-AD05C059A125.jpeg"
+                loading="lazy" />
+        </picture>
+    </div>
+    <h3 id="googlefinance-best-practices">GOOGLEFINANCE Best Practices</h3>
+    <p>Anyone using Google Sheets to manage stock portfolio investment must know how to use the GOOGLEFINANCE function
+        to fetch historical prices of stocks. As I have used it extensively to <a
+            href="https://www.allstacksdeveloper.com/2020/04/manage-stock-transactions-with-google-sheets.html">manage
+            my stock portfolio investment in Google Sheets</a>, I have learned several best practices for using the
+        GOOGLEFINANCE function that I would like to share in this post.</p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <!-- Choose image of 800px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgCO7onCUUiyfF2bE941KXHzlCdkelZI3A_GoYQLwD54a09NAn6AkKo_95qrd9RVukJUOaPIweg8knuz2KEi8dstQYh9G5R3mdbjUaSgDB_eEy8EleWo_ALeVTpXD8t2JVfcl8Uv17RD2GHBJysr8P0PHNHABRyJpX4OCzH4rJflUSeUbYkRaUwq8er/s800/8DFD3DF7-0424-49E0-BDF2-910090425F17_4_5005_c.jpeg"
+                media="(min-width: 1168px)" />
+            <!-- Choose image of 600px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgCO7onCUUiyfF2bE941KXHzlCdkelZI3A_GoYQLwD54a09NAn6AkKo_95qrd9RVukJUOaPIweg8knuz2KEi8dstQYh9G5R3mdbjUaSgDB_eEy8EleWo_ALeVTpXD8t2JVfcl8Uv17RD2GHBJysr8P0PHNHABRyJpX4OCzH4rJflUSeUbYkRaUwq8er/s600/8DFD3DF7-0424-49E0-BDF2-910090425F17_4_5005_c.jpeg"
+                media="(min-width: 481) and (max-width: 1167px)" />
+            <!-- Choose image of 480px width -->
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgCO7onCUUiyfF2bE941KXHzlCdkelZI3A_GoYQLwD54a09NAn6AkKo_95qrd9RVukJUOaPIweg8knuz2KEi8dstQYh9G5R3mdbjUaSgDB_eEy8EleWo_ALeVTpXD8t2JVfcl8Uv17RD2GHBJysr8P0PHNHABRyJpX4OCzH4rJflUSeUbYkRaUwq8er/s480/8DFD3DF7-0424-49E0-BDF2-910090425F17_4_5005_c.jpeg"
+                media="(max-width: 480px)" />
+            <img alt="Keep only the price with GOOGLEFINANCE" title="Keep only the price with GOOGLEFINANCE"
+                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgCO7onCUUiyfF2bE941KXHzlCdkelZI3A_GoYQLwD54a09NAn6AkKo_95qrd9RVukJUOaPIweg8knuz2KEi8dstQYh9G5R3mdbjUaSgDB_eEy8EleWo_ALeVTpXD8t2JVfcl8Uv17RD2GHBJysr8P0PHNHABRyJpX4OCzH4rJflUSeUbYkRaUwq8er/s800/8DFD3DF7-0424-49E0-BDF2-910090425F17_4_5005_c.jpeg"
+                loading="lazy" />
+        </picture>
+    </div>
+    <h3 id="use-sparkline-column-chart-to-create-price-chart-with-reference-price">Use SPARKLINE column chart to create
+        price chart with reference price</h3>
+    <p>I own and follow several stocks in my investment portfolio. I pick a reference price for each stock. To
+        effectively track the movement of a stock, I need to visualize its 52-week prices based on the reference price
+        that I determined. In this post, I explain how to do so with the SPARKLINE column chart in Google Sheets.</p>
+    <!-- Thumbnail image is before jumpbreak and jumbreak is before table of content -->
+    <div class="separator" style="clear: both; text-align: center;">
+        <picture>
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhldhZ3S8mBZMN46TOlcW9OF0B7fOgzgN-Cadu_ej3XpB8r5_OwIae9iBE0ZdC8mU12GCC-PqsI6Qda97sXr4EvTnoF0rKexGPUFSQa4AJSb6axF3bK3rt4tS2jKWOI_BV5-bAKQwjUcqRb6CJw0C22XoZvHNmu7Z0MkCTYPqbKBJphOD5ygU3cOLRf/s800/21E627C5-5BD0-47B7-B208-ACB3DE8F395A.jpeg"
+                media="(min-width: 1168px)" />
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhldhZ3S8mBZMN46TOlcW9OF0B7fOgzgN-Cadu_ej3XpB8r5_OwIae9iBE0ZdC8mU12GCC-PqsI6Qda97sXr4EvTnoF0rKexGPUFSQa4AJSb6axF3bK3rt4tS2jKWOI_BV5-bAKQwjUcqRb6CJw0C22XoZvHNmu7Z0MkCTYPqbKBJphOD5ygU3cOLRf/s600/21E627C5-5BD0-47B7-B208-ACB3DE8F395A.jpeg"
+                media="(min-width: 481px) and (max-width: 1167px)" />
+            <source
+                srcset="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhldhZ3S8mBZMN46TOlcW9OF0B7fOgzgN-Cadu_ej3XpB8r5_OwIae9iBE0ZdC8mU12GCC-PqsI6Qda97sXr4EvTnoF0rKexGPUFSQa4AJSb6axF3bK3rt4tS2jKWOI_BV5-bAKQwjUcqRb6CJw0C22XoZvHNmu7Z0MkCTYPqbKBJphOD5ygU3cOLRf/s480/21E627C5-5BD0-47B7-B208-ACB3DE8F395A.jpeg"
+                media="(max-width: 480px)" />
+            <img alt="Use SPARKLINE column chart to show stock price trend in Google Sheets"
+                title="Use SPARKLINE column chart to show stock price trend in Google Sheets"
+                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhldhZ3S8mBZMN46TOlcW9OF0B7fOgzgN-Cadu_ej3XpB8r5_OwIae9iBE0ZdC8mU12GCC-PqsI6Qda97sXr4EvTnoF0rKexGPUFSQa4AJSb6axF3bK3rt4tS2jKWOI_BV5-bAKQwjUcqRb6CJw0C22XoZvHNmu7Z0MkCTYPqbKBJphOD5ygU3cOLRf/s800/21E627C5-5BD0-47B7-B208-ACB3DE8F395A.jpeg"
+                loading="lazy" />
+        </picture>
+    </div>
+
 </body>
+
 </html>
